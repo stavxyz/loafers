@@ -2,15 +2,39 @@
 package main
 
 import (
-	"fmt"
+	"context"
+	"encoding/json"
 
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-lambda-go/lambdacontext"
 )
 
+// Version is the git version of this lambda
 var Version string
 
-func hello() (string, error) {
-	return fmt.Sprintf("Hello ƛ! \n Version: %s", Version), nil
+// Response is the lambda's return value data
+type Response struct {
+	*lambdacontext.LambdaContext
+	Message         string `json:"Message"`
+	FunctionVersion string `json:"FunctionVersion"`
+	FunctionName    string `json:"FunctionName"`
+}
+
+func hello(ctx context.Context) (string, error) {
+	lc, _ := lambdacontext.FromContext(ctx)
+	res := &Response{
+		LambdaContext: lc,
+		Message:       "Hello",
+		// The following are globals in the lambda env
+		FunctionVersion: lambdacontext.FunctionVersion,
+		FunctionName:    lambdacontext.FunctionName,
+	}
+	content, err := json.Marshal(res)
+	if err != nil {
+		return "", err
+	}
+
+	return string(content), nil
 }
 
 func main() {
