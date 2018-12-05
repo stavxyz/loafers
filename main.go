@@ -14,13 +14,15 @@ var Version string
 
 // Response is the lambda's return value data
 type Response struct {
-	*lambdacontext.LambdaContext
+	LambdaContext   *lambdacontext.LambdaContext
 	Version         string `json:"Version"`
 	Message         string `json:"Message"`
+	AwsRequestID    string `json:"AwsRequestID"`
 	FunctionVersion string `json:"FunctionVersion"`
 	FunctionName    string `json:"FunctionName"`
 }
 
+// Event is the data passed to the lambda function
 type Event struct {
 	Message string `json:"message"`
 }
@@ -31,7 +33,8 @@ func hello(ctx context.Context, event Event) (string, error) {
 		LambdaContext: lc,
 		Message:       event.Message,
 		Version:       Version,
-		// The following are globals in the lambda env
+		// the following come from the aws lambda env
+		AwsRequestID:    lc.AwsRequestID,
 		FunctionVersion: lambdacontext.FunctionVersion,
 		FunctionName:    lambdacontext.FunctionName,
 	}
