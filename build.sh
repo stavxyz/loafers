@@ -48,9 +48,9 @@ function do_go_build_for_lambda {
   _lambda_package_name="$1"
   # The -i flag installs the packages that are dependencies of the target.
   # In the following line, should "main" be ${_lambda_package_name} ?
-  GOOS=linux GOARCH=amd64 && go build \
+  GOOS=linux GOARCH=amd64 go build \
     -i \
-    -ldflags "-X ${REPOSITORY}/main.Version=${GITSHA:-HELLO}" \
+    -ldflags "-X main.Version=${GITSHA:-HELLO}" \
     -o "${_lambda_package_name}" \
     main.go
   echo "wrote go package '${_lambda_package_name}'"
