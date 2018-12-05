@@ -15,16 +15,22 @@ var Version string
 // Response is the lambda's return value data
 type Response struct {
 	*lambdacontext.LambdaContext
+	Version         string `json:"Version"`
 	Message         string `json:"Message"`
 	FunctionVersion string `json:"FunctionVersion"`
 	FunctionName    string `json:"FunctionName"`
 }
 
-func hello(ctx context.Context) (string, error) {
+type Event struct {
+	Message string `json:"message"`
+}
+
+func hello(ctx context.Context, event Event) (string, error) {
 	lc, _ := lambdacontext.FromContext(ctx)
 	res := &Response{
 		LambdaContext: lc,
-		Message:       "Hello",
+		Message:       event.Message,
+		Version:       Version,
 		// The following are globals in the lambda env
 		FunctionVersion: lambdacontext.FunctionVersion,
 		FunctionName:    lambdacontext.FunctionName,
