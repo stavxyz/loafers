@@ -2,11 +2,15 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
+var Version string
+
 func hello() (string, error) {
-	return "Hello ƛ!", nil
+	return fmt.Sprintf("Hello ƛ! \n Version: %s", Version), nil
 }
 
 func main() {
